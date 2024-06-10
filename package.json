@@ -13,9 +13,7 @@
     "size": "size-limit",
     "build": "npm run build -ws",
     "watch": "concurrently -n boom-router \\\\\\\"npm run -w packages/boom-router-react watch\\\\\\\"",
-    "lint": "eslint packages/**/*.js",
-    "changelog-dry-run": "auto-changelog -p --template keepachangelog auto-changelog --breaking-pattern 'BREAKING CHANGE:'",
-    "changelog": "auto-changelog -p --template keepachangelog auto-changelog --breaking-pattern 'BREAKING CHANGE:' && git add CHANGELOG.md"
+    "lint": "eslint packages/**/*.js"
   },
   "author": "Rohit Khanduri <rohit.khanduri@proton.me>",
   "repository": {
@@ -112,7 +110,6 @@
     "@types/react-test-renderer": "^18.0.0",
     "@vitejs/plugin-react": "^4.0.4",
     "@vitest/coverage-v8": "^0.34.3",
-    "auto-changelog": "^2.4.0",
     "concurrently": "^8.2.1",
     "copyfiles": "^2.4.1",
     "eslint": "^7.19.0",
