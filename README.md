@@ -3,15 +3,9 @@
 </div>
 
 <br />
-<!--
 <div align="center">
-  <a href="https://npmjs.org/package/boom-router"><img alt="npm" src="https://img.shields.io/npm/v/boom-router.svg?color=black&labelColor=888" /></a>
-  <a href="https://travis-ci.org/molefrog/boom-router"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/molefrog/boom-router/size.yml?color=black&labelColor=888&label=2.5KB+limit" /></a>
-  <a href="https://codecov.io/gh/molefrog/boom-router"><img alt="Coverage" src="https://img.shields.io/codecov/c/github/molefrog/boom-router.svg?color=black&labelColor=888" /></a>
-  <a href="https://www.npmjs.com/package/boom-router"><img alt="Coverage" src="https://img.shields.io/npm/dm/boom-router.svg?color=black&labelColor=888" /></a>
-  <a href="https://pr.new/molefrog/boom-router"><img alt="Edit in StackBlitz IDE" src="https://img.shields.io/badge/StackBlitz-New%20PR-black?labelColor=888" /></a>
+  <a href="https://npmjs.org/package/boom-router"><img alt="npm" src="https://img.shields.io/npm/v/boom-router.svg?color=purple&labelColor=ffded5" /></a>
 </div>
--->
 <div align="center">
   <b>boom-router</b> is a tiny router for modern React apps that relies on Hooks. <br />
 </div>
