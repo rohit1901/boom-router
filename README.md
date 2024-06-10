@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.svg" width="80" alt="Boom Router — a minimalistic React router" />
+  <img src="assets/boom-router.logo.svg" width="80" alt="Boom Router — a minimalistic React router" />
 </div>
 
 <br />
@@ -13,13 +13,10 @@
 </div>
 -->
 <div align="center">
-  <b>boom-router</b> is a tiny router for modern React and Preact apps that relies on Hooks. <br />
-  A router you wanted so bad in your project!<br>
+  <b>boom-router</b> is a tiny router for modern React apps that relies on Hooks. <br />
 </div>
 
 ## Features
-
-<img src="assets/boom-router.svg" align="right" width="250" />
 
 - Minimum dependencies, only **2.1 KB** gzipped vs 18.7KB
   [React Router](https://github.com/ReactTraining/react-router).
@@ -68,7 +65,6 @@
     - [Server-side Rendering support (SSR)?](#server-side-rendering-support-ssr)
     - [How do I configure the router to render a specific route in tests?](#how-do-i-configure-the-router-to-render-a-specific-route-in-tests)
     - [1KB is too much, I can't afford it!](#1kb-is-too-much-i-cant-afford-it)
-- [Acknowledgements](#acknowledgements)
 
 ## Getting Started
 
@@ -826,8 +822,7 @@ import { render } from "@testing-library/react";
 import { memoryLocation } from "boom-router/memory-location";
 
 it("renders a user page", () => {
-  // `static` option makes it immutable
-  // even if you call `navigate` somewhere in the app location won't change
+  // `static` mode is used to prevent the hook from updating the location
   const { hook } = memoryLocation({ path: "/user/2", static: true });
 
   const { container } = render(
@@ -840,13 +835,13 @@ it("renders a user page", () => {
 });
 ```
 
-The hook can be configured to record navigation history. Additionally, it comes with a `navigate` function for external navigation.
+The hook can be configured to record navigation history. Additionally, there's a `navigate` function for external navigation.
 
 ```jsx
 it("performs a redirect", () => {
   const { hook, history, navigate } = memoryLocation({
     path: "/",
-    // will store navigation history in `history`
+    // record navigation history
     record: true,
   });
 
@@ -874,8 +869,8 @@ it("performs a redirect", () => {
 
 ### 1KB is too much, I can't afford it!
 
-We've got some great news for you! If you're a minimalist bundle-size nomad and you need a damn
-simple routing in your app, you can just use bare location hooks. For example, `useBrowserLocation` hook which is only **650 bytes gzipped**
+For those who are looking for the smallest possible bundle size, you can use the standalone location hooks that are available in the package.
+For example, `useBrowserLocation` hook which is only **~650 bytes gzipped**
 and manually match the current location with it:
 
 ```js
