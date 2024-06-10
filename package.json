@@ -1,7 +1,7 @@
 {
   "name": "monorepo",
-  "private": true,
-  "description": "A minimalistic routing for React. Monorepo package.",
+  "description": "A simple router for React. Monorepo package.",
+  "private": false,
   "type": "module",
   "workspaces": [
     "packages/boom-router-react"
