@@ -67,7 +67,7 @@ jobs:
           INITIAL_VERSION: ${{ steps.package-version.outputs.current-version }}
           DEFAULT_BUMP: ${{ env.RELEASE_TYPE }}
       # Commit changes
-      - name: Commit changes
+      - name: Commit changes using git-auto-commit-action@v5
         uses: stefanzweifel/git-auto-commit-action@v5
         id: auto-commit-action
         with:
