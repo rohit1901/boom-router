@@ -13,13 +13,15 @@
 ## Features
 
 - Unpacked Size is **49.5 kB** vs **810 kB** [React Router](hhttps://github.com/ReactTraining/react-router).
-- **Fully optional** top-level `<Router />` component.
+- **Fully optional** top-level **[`<Router />`](#router-hookhook-parserfn-basebasepath-hrefsfn-)** component.
 - Familiar components: **[`Route`](#route-pathpattern-)**, **[`Link`](#link-hrefpath-)**,
   **[`Switch`](#switch-)** and **[`Redirect`](#redirect-topath-)**.
 - Hook-based API:
-  **[`useLocation`](#uselocation-working-with-the-history)**,
+  **[`useLocation`](#uselocation-managing-history)**,
   **[`useRoute`](#useroute-route-matching-and-parameters)** and
   **[`useRouter`](#userouter-accessing-the-router-object)**.
+  **[`useParams`](#useparams-extracting-matched-parameters)** and
+  **[`useSearch`](#usesearch-query-strings)**.
 
 ## Installation
 
@@ -61,7 +63,7 @@ Choose the one that fits your needs:
 - To create custom routing components, use routing hooks.
 - For traditional applications with pages and navigation, use the component-based API.
 
-Check out the [FAQ and Code Recipes](#faq-and-code-recipes) for advanced topics like active links, default routes, and server-side rendering.
+Check out the [Tips and Tricks](#tips-and-tricks) for advanced topics like active links, default routes, and server-side rendering.
 
 ### Available Methods
 
@@ -95,7 +97,7 @@ Components are also available from the `boom-router` module.
 
 ## Hooks API
 
-**`useRoute`: Route Matching and Parameters**
+### **`useRoute`: Route Matching and Parameters**
 
 The `useRoute` hook checks if the current location matches a provided pattern and returns parameters using the [`regexparam`](https://github.com/lukeed/regexparam) library's pattern syntax.
 
@@ -134,7 +136,7 @@ if (match) {
 }
 ```
 
-**`useLocation`: Managing History**
+### **`useLocation`: Managing History**
 
 The `useLocation` hook returns the current path and a setter function for navigation. Components re-render when the location changes.
 
@@ -182,7 +184,7 @@ const App = () => (
 );
 ```
 
-**`useParams`: Extracting Matched Parameters**
+### **`useParams`: Extracting Matched Parameters**
 
 The `useParams` hook allows access to parameters exposed through matching dynamic segments.
 
@@ -199,7 +201,7 @@ const User = () => {
 <Route path={/^[/]user[/](?<id>[0-9]+)[/]?$/} component={User} />
 ```
 
-**`useSearch`: Query Strings**
+### **`useSearch`: Query Strings**
 
 The `useSearch` hook returns the current search string value.
 
@@ -209,7 +211,7 @@ import { useSearch } from "boom-router";
 const searchString = useSearch();
 ```
 
-**`useRouter`: Accessing the Router Object**
+### **`useRouter`: Accessing the Router Object**
 
 The `useRouter` hook allows access to the global router object.
 
@@ -254,13 +256,6 @@ import { Route } from "boom-router";
 
 A route with no path is considered to always match, equivalent to `<Route path="*" />`. During app development, use this technique to peek at the route's content without navigating.
 
-```diff
--<Route path="/some/page">
-+<Route>
-  {/* Strip out the `path` to make this visible */}
-</Route>
-```
-
 #### Route Nesting
 
 Nesting is a core feature of boom-router and can be enabled on a route via the `nest` prop. When this prop is present, the route matches everything that starts with a given pattern, creating a nested routing context. All child routes will receive a location relative to that pattern.
@@ -279,7 +274,7 @@ Consider this example:
 
 2. The second one uses a dynamic pattern to match paths like `/app/user/1`, `/app/user/1/anything`, and so on.
 
-3. The inner-most route will only work for paths like `/app/users/1/orders`. The match is strict, as that route does not have a `nest` prop and works as usual.
+3. The innermost route will only work for paths like `/app/users/1/orders`. The match is strict, as that route does not have a `nest` prop and works as usual.
 
 If you call `useLocation()` inside the last route, it will return `/orders`, not `/app/users/1/orders`. This creates isolation, making it easier to make changes to the parent route without affecting the rest of the app. To navigate to a top-level page, use a `~` prefix to refer to an absolute path:
 
@@ -330,8 +325,6 @@ When you pass a function as the `className` prop, it will be called with a boole
 <Link className={(active) => (active ? "active" : "")}>Nav</Link>
 ```
 
-Read more about [active links here](#how-do-i-make-a-link-active-for-the-current-route).
-
 ### `<Switch />`
 
 In some cases, you may want exclusive routing to ensure that only one route is rendered at a time, even if the routes have overlapping patterns. This is where `Switch` comes in: it only renders **the first matching route**.
@@ -352,13 +345,15 @@ import { Route, Switch } from "boom-router";
 </Switch>;
 ```
 
-When no route in the switch matches, the last empty `Route` will be used as a fallback. See [**FAQ and Code Recipes** section](#how-do-i-make-a-default-route) for default route information.
+When no route in the switch matches, the last empty `Route` will be used as a fallback. See [**Tips and Tricks** section](#tips-and-tricks) for default route 
+information.
 
 ### `<Redirect to={path} />`
 
 When mounted, `Redirect` performs a redirect to the provided `path`. It uses the `useLocation` hook internally to trigger navigation within a `useEffect` block.
 
-`Redirect` can also accept props for [customizing how navigation will be performed](#additional-navigation-parameters), such as setting history state when navigating. These options are specific to the currently used location hook.
+`Redirect` can also accept props for [customizing how navigation will be performed](#tips-and-tricks), such as setting history state when navigating. These 
+options are specific to the currently used location hook.
 
 ```jsx
 <Redirect to="/" />
@@ -399,13 +394,16 @@ import { useHashLocation } from "boom-router/use-hash-location";
 
 A router is a simple object that holds the routing configuration options. You can always obtain this object using the [`useRouter` hook](#userouter-accessing-the-router-object). The list of currently available options:
 
-- **`hook: () => [location: string, setLocation: fn]`** — a React Hook function that subscribes to location changes. It returns a pair of current `location` string, e.g., `/app/users`, and a `setLocation` function for navigation. You can use this hook from any component of your app by calling [`useLocation()` hook](#uselocation-working-with-the-history). See [Customizing the location hook](#customizing-the-location-hook).
+- **`hook: () => [location: string, setLocation: fn]`** — a React Hook function that subscribes to location changes. It returns a pair of current 
+  `location` string, e.g., `/app/users`, and a `setLocation` function for navigation. You can use this hook from any component of your app by 
+  calling [`useLocation()` hook](#uselocation-managing-history). See [Customizing the location hook](#uselocation-managing-history).
 
 - **`searchHook: () => [search: string, setSearch: fn]`** — similar to `hook`, but for obtaining the [current search string](#usesearch-query-strings).
 
-- **`base: string`** — an optional setting that allows you to specify a base path, such as `/app`. All application routes will be relative to that path. To navigate to an absolute path, prefix your path with a `~`. [See the FAQ](#are-relative-routes-and-links-supported).
+- **`base: string`** — an optional setting that allows you to specify a base path, such as `/app`. All application routes will be relative to that 
+  path. To navigate to an absolute path, prefix your path with a `~`. [See the Tips and Tricks](#tips-and-tricks).
 
-- **`parser: (path: string, loose?: boolean) => { pattern, keys }`** — a pattern parsing function. It produces a RegExp for matching the current location against user-defined patterns like `/app/users/:id`. It has the same interface as the [`parse`](https://github.com/lukeed/regexparam?tab=readme-ov-file#regexparamparseinput-regexp) function from `regexparam`. See [this example](#are-strict-routes-supported) that demonstrates the custom parser feature.
+- **`parser: (path: string, loose?: boolean) => { pattern, keys }`** — a pattern parsing function. It produces a RegExp for matching the current location against user-defined patterns like `/app/users/:id`. It has the same interface as the [`parse`](https://github.com/lukeed/regexparam?tab=readme-ov-file#regexparamparseinput-regexp) function from `regexparam`.
 
 - **`ssrPath: string`** and **`ssrSearch: string`** — use these when [rendering your app on the server](#server-side-rendering-support-ssr).
 
@@ -624,6 +622,7 @@ const UsersRoute = () => {
 
 I'd like to extend my gratitude to the authors and contributors of the libraries that have inspired and guided the development of **boom-router**. Your work has been invaluable.
 
-I've put a lot of effort into crafting this library and its documentation. Thank you for considering **boom-router**! I hope you find it helpful in building your applications.
+I've put a lot of effort into crafting this library and its **documentation**. Thank you for considering **boom-router**! I hope you find it 
+helpful in building your applications.
 
 If you have any feedback, suggestions, or issues, please don't hesitate to reach out. Happy coding!
