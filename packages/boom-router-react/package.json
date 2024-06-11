@@ -1,6 +1,6 @@
 {
   "name": "boom-router",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tiny router for modern React apps that relies on Hooks.",
   "type": "module",
   "keywords": [
