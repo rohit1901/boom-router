@@ -3,7 +3,7 @@ import { Path, SearchString } from "./location-hook.js";
 type Primitive = string | number | bigint | boolean | null | undefined | symbol;
 export const useLocationProperty: <S extends Primitive>(
   fn: () => S,
-  ssrFn?: () => S,
+  ssrFn?: () => S
 ) => S;
 
 export type BrowserSearchHook = (options?: {
@@ -18,7 +18,7 @@ export const useHistoryState: <T = any>() => T;
 
 export const navigate: <S = any>(
   to: string | URL,
-  options?: { replace?: boolean; state?: S },
+  options?: { replace?: boolean; state?: S }
 ) => void;
 
 /*

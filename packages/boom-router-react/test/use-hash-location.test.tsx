@@ -172,7 +172,7 @@ it("works even if `hashchange` listeners are called asynchronously ", async () =
           <LogLocations />
         </InterceptAndStopHashchange>
       </Route>
-    </Router>,
+    </Router>
   );
 
   location.hash = "#/b";
@@ -191,7 +191,7 @@ it("defines a custom way of rendering link hrefs", () => {
   const { getByTestId } = render(
     <Router hook={useHashLocation}>
       <Link href="/app" data-testid="link" />
-    </Router>,
+    </Router>
   );
 
   expect(getByTestId("link")).toHaveAttribute("href", "#/app");

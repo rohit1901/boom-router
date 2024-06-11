@@ -80,7 +80,7 @@ describe("server-side rendering", () => {
       const rendered = renderToStaticMarkup(
         <Router ssrPath="/">
           <PrintSearch />
-        </Router>,
+        </Router>
       );
 
       expect(rendered).toBe("");
@@ -101,7 +101,7 @@ describe("server-side rendering", () => {
       const rendered = renderToStaticMarkup(
         <Router ssrPath="/catalog" ssrSearch="sort=created_at">
           <App />
-        </Router>,
+        </Router>
       );
 
       expect(rendered).toBe("/catalog filter by sort=created_at");

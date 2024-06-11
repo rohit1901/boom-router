@@ -8,7 +8,7 @@ import { ReactElement } from "react";
 
 const testRouteRender = (initialPath: string, jsx: ReactElement) => {
   const instance = TestRenderer.create(
-    <Router hook={memoryLocation({ path: initialPath }).hook}>{jsx}</Router>,
+    <Router hook={memoryLocation({ path: initialPath }).hook}>{jsx}</Router>
   ).root;
 
   return instance;
@@ -19,7 +19,7 @@ it("always renders its content when `path` is empty", () => {
     "/nothing",
     <Route>
       <h1>Hello!</h1>
-    </Route>,
+    </Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("Hello!");
@@ -30,7 +30,7 @@ it("accepts plain children", () => {
     "/foo",
     <Route path="/foo">
       <h1>Hello!</h1>
-    </Route>,
+    </Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("Hello!");
@@ -39,7 +39,7 @@ it("accepts plain children", () => {
 it("works with render props", () => {
   const result = testRouteRender(
     "/foo",
-    <Route path="/foo">{() => <h1>Hello!</h1>}</Route>,
+    <Route path="/foo">{() => <h1>Hello!</h1>}</Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("Hello!");
@@ -48,7 +48,7 @@ it("works with render props", () => {
 it("passes a match param object to the render function", () => {
   const result = testRouteRender(
     "/users/rohit",
-    <Route path="/users/:name">{(params) => <h1>{params.name}</h1>}</Route>,
+    <Route path="/users/:name">{(params) => <h1>{params.name}</h1>}</Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("rohit");
@@ -59,7 +59,7 @@ it("renders nothing when there is not match", () => {
     "/bar",
     <Route path="/foo">
       <div>Hi!</div>
-    </Route>,
+    </Route>
   );
 
   expect(() => result.findByType("div")).toThrow();
@@ -70,7 +70,7 @@ it("supports `component` prop similar to React-Router", () => {
 
   const result = testRouteRender(
     "/foo",
-    <Route path="/foo" component={Users} />,
+    <Route path="/foo" component={Users} />
   );
 
   expect(result.findByType("h2").props.children).toBe("All users");
@@ -85,7 +85,7 @@ it("supports `base` routers with relative path", () => {
       <Route path="~/absolute">
         <h2>Absolute</h2>
       </Route>
-    </Router>,
+    </Router>
   );
 
   act(() => history.replaceState(null, "", "/app/nested"));
@@ -101,7 +101,7 @@ it("supports `path` prop with regex", () => {
     "/foo",
     <Route path={/[/]foo/}>
       <h1>Hello!</h1>
-    </Route>,
+    </Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("Hello!");
@@ -112,7 +112,7 @@ it("supports regex path named params", () => {
     "/users/rohit",
     <Route path={/[/]users[/](?<name>[a-z]+)/}>
       {(params) => <h1>{params.name}</h1>}
-    </Route>,
+    </Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("rohit");
@@ -123,7 +123,7 @@ it("supports regex path anonymous params", () => {
     "/users/rohit",
     <Route path={/[/]users[/]([a-z]+)/}>
       {(params) => <h1>{params[0]}</h1>}
-    </Route>,
+    </Route>
   );
 
   expect(result.findByType("h1").props.children).toBe("rohit");
@@ -134,7 +134,7 @@ it("rejects when a path does not match the regex", () => {
     "/users/1234",
     <Route path={/[/]users[/](?<name>[a-z]+)/}>
       {(params) => <h1>{params.name}</h1>}
-    </Route>,
+    </Route>
   );
 
   expect(() => result.findByType("h1")).toThrow();

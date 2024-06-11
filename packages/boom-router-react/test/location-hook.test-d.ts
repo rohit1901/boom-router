@@ -17,7 +17,7 @@ describe("`HookNavigationOptions` utility type", () => {
   it("should return object with required navigation params", () => {
     const hook = (): [
       string,
-      (path: string, options: { replace: boolean; optional?: number }) => void,
+      (path: string, options: { replace: boolean; optional?: number }) => void
     ] => {
       return ["stub", () => {}];
     };
@@ -38,7 +38,7 @@ describe("`HookNavigationOptions` utility type", () => {
 
   it("should not contain never when options are optional", () => {
     const hook = (
-      param: string,
+      param: string
     ): [string, (path: string, options?: { replace: boolean }) => void] => {
       return ["stub", () => {}];
     };

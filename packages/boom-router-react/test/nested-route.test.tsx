@@ -18,7 +18,7 @@ describe("when `nest` prop is given", () => {
         <Route path="/posts/:slug" nest>
           matched!
         </Route>
-      </Router>,
+      </Router>
     );
 
     expect(container.innerHTML).toBe("");
@@ -47,7 +47,7 @@ describe("when `nest` prop is given", () => {
           </Route>
           <Route>default</Route>
         </Switch>
-      </Router>,
+      </Router>
     );
 
     expect(container.innerHTML).toBe("nested");
@@ -87,7 +87,7 @@ describe("when `nest` prop is given", () => {
             <Route path="/all">All settings</Route>
           </Route>
         </Route>
-      </Router>,
+      </Router>
     );
 
     expect(container.innerHTML).toBe("All settings");

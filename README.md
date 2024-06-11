@@ -12,9 +12,7 @@
 
 ## Features
 
-- Only essential dependencies, just **2.1 KB** gzipped vs 18.7KB
-  [React Router](https://github.com/ReactTraining/react-router).
-- Unpacked Size is **280 KB** vs **810 KB** [React Router](hhttps://github.com/ReactTraining/react-router).
+- Unpacked Size is **49.5 kB** vs **810 kB** [React Router](hhttps://github.com/ReactTraining/react-router).
 - **Fully optional** top-level `<Router />` component.
 - Familiar components: **[`Route`](#route-pathpattern-)**, **[`Link`](#link-hrefpath-)**,
   **[`Switch`](#switch-)** and **[`Redirect`](#redirect-topath-)**.
