@@ -33,7 +33,7 @@ export const navigate = (to, { state = null } = {}) => {
       location.search +
       // update location hash, this will cause `hashchange` event to fire
       // normalise the value before updating, so it's always preceeded with "#/"
-      (location.hash = `#/${to.replace(/^#?\/?/, "")}`)
+      (location.hash = `#/${to.replace(/^#?\/?/, "")}`),
   );
 };
 
@@ -41,7 +41,7 @@ export const useHashLocation = ({ ssrPath = "/" } = {}) => [
   useSyncExternalStore(
     subscribeToHashUpdates,
     currentHashLocation,
-    () => ssrPath
+    () => ssrPath,
   ),
   navigate,
 ];

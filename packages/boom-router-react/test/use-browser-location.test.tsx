@@ -54,7 +54,7 @@ describe("`value` first argument", () => {
   it("supports history state", () => {
     const { result, unmount } = renderHook(() => useBrowserLocation());
     const { result: state, unmount: unmountState } = renderHook(() =>
-      useHistoryState()
+      useHistoryState(),
     );
 
     const navigate = result.current[1];
@@ -183,7 +183,7 @@ describe("`update` second parameter", () => {
 
   it("stays the same reference between re-renders (function ref)", () => {
     const { result, rerender, unmount } = renderHook(() =>
-      useBrowserLocation()
+      useBrowserLocation(),
     );
 
     const updateWas = result.current[1];
