@@ -63,7 +63,7 @@ jobs:
         uses: jaywcjlove/github-action-package@main
         with:
           version: ${{ steps.version-bump-dry-run.outputs.new_tag }}
-          path: './packages/boom-router-react'
+          path: './packages/boom-router-react/package.json'
       # Bump version and push tag
       - name: Bump version and push tag
         id: version-bump
