@@ -8,7 +8,7 @@
   ],
   "version": "1.0.0",
   "scripts": {
-    "fix:p": "prettier --write \"./**/*.(js|ts){x,}\"",
+    "fix:p": "prettier --write \"./packages/**/*.(js|ts){x,}\"",
     "test": "vitest",
     "size": "size-limit",
     "build": "npm run build -ws",
