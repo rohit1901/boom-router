@@ -12,7 +12,7 @@ describe("<Link />", () => {
     const { getByText } = render(
       <Link href="/about" className="link--active">
         Click Me
-      </Link>,
+      </Link>
     );
 
     const element = getByText("Click Me");
@@ -27,7 +27,7 @@ describe("<Link />", () => {
     const { getByText } = render(
       <Link href="/" ref={refCallback}>
         Testing
-      </Link>,
+      </Link>
     );
 
     const element = getByText("Testing");
@@ -61,7 +61,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Link href="/goo-baz" data-testid="link">
         link
-      </Link>,
+      </Link>
     );
 
     fireEvent.click(getByTestId("link"));
@@ -73,7 +73,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Link href="/goo-baz" replace data-testid="link">
         link
-      </Link>,
+      </Link>
     );
 
     const histBefore = history.length;
@@ -88,7 +88,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Link href="/users" data-testid="link">
         click
-      </Link>,
+      </Link>
     );
     const clickEvt = new MouseEvent("click", {
       bubbles: true,
@@ -113,7 +113,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Link href="/users" data-testid="link" onClick={clickHandler}>
         click
-      </Link>,
+      </Link>
     );
 
     fireEvent.click(getByTestId("link"));
@@ -124,7 +124,7 @@ describe("<Link />", () => {
     const clickHandler = vi.fn();
 
     const { getByTestId } = render(
-      <Link href="/" onClick={clickHandler} data-testid="link" />,
+      <Link href="/" onClick={clickHandler} data-testid="link" />
     );
 
     fireEvent.click(getByTestId("link"));
@@ -135,7 +135,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Router base="/app">
         <Link href="/dashboard" data-testid="link" />
-      </Router>,
+      </Router>
     );
 
     const link = getByTestId("link");
@@ -146,7 +146,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Router base="/app">
         <Link href="~/home" data-testid="link" />
-      </Router>,
+      </Router>
     );
 
     const element = getByTestId("link");
@@ -158,7 +158,7 @@ describe("<Link />", () => {
     const { getByTestId } = render(
       <Link href="/goo-baz" state={testState} data-testid="link">
         link
-      </Link>,
+      </Link>
     );
 
     fireEvent.click(getByTestId("link"));
@@ -179,7 +179,7 @@ describe("<Link />", () => {
         <Router base="/app" hrefs={formatter}>
           <Link href="~/home" data-testid="absolute" />
         </Router>
-      </>,
+      </>
     );
 
     expect(getByTestId("root")).toHaveAttribute("href", "#/");
@@ -193,7 +193,7 @@ describe("active links", () => {
     const { getByText } = render(
       <Link href="/" className="link--active warning">
         Click Me
-      </Link>,
+      </Link>
     );
 
     const element = getByText("Click Me");
@@ -213,7 +213,7 @@ describe("active links", () => {
         >
           Click Me
         </Link>
-      </Router>,
+      </Router>
     );
 
     const element = getByText("Click Me");
@@ -241,7 +241,7 @@ describe("active links", () => {
         >
           Click Me
         </Link>
-      </Router>,
+      </Router>
     );
 
     const element = getByText("Click Me");
@@ -261,7 +261,7 @@ describe("<Link /> with `asChild` prop", () => {
     const { getByText } = render(
       <Link href="/about">
         <div className="link--wannabe">Click Me</div>
-      </Link>,
+      </Link>
     );
 
     const link = getByText("Click Me");
@@ -280,7 +280,7 @@ describe("<Link /> with `asChild` prop", () => {
       /* @ts-expect-error */
       <Link href="/about" asChild>
         Click Me
-      </Link>,
+      </Link>
     );
 
     const link = getByText("Click Me");
@@ -297,7 +297,7 @@ describe("<Link /> with `asChild` prop", () => {
         <span>1</span>
         <span>2</span>
         <span>3</span>
-      </Link>,
+      </Link>
     );
 
     const span = getByText("1");
@@ -312,7 +312,7 @@ describe("<Link /> with `asChild` prop", () => {
     const { getByText } = render(
       <Link href="/about" asChild>
         <div className="link--wannabe">Click Me</div>
-      </Link>,
+      </Link>
     );
 
     const link = getByText("Click Me");

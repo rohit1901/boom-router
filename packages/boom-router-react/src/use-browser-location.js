@@ -38,7 +38,7 @@ const currentPathname = () => location.pathname;
 export const usePathname = ({ ssrPath } = {}) =>
   useLocationProperty(
     currentPathname,
-    ssrPath ? () => ssrPath : currentPathname,
+    ssrPath ? () => ssrPath : currentPathname
   );
 
 const currentHistoryState = () => history.state;

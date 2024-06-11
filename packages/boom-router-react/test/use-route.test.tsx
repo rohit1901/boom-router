@@ -23,7 +23,7 @@ it("supports required segments", () => {
   assertRoute(
     "/root/payments/:id/refunds/:refId",
     "/root/payments/1/refunds/2",
-    [true, { 0: "1", 1: "2", id: "1", refId: "2" }],
+    [true, { 0: "1", 1: "2", id: "1", refId: "2" }]
   );
 });
 
@@ -177,7 +177,7 @@ it("reacts to pattern updates", () => {
         />
       ),
       initialProps: { pattern: "/" },
-    },
+    }
   );
 
   expect(result.current).toStrictEqual([false, null]);
@@ -240,7 +240,7 @@ it("reacts to location updates", () => {
 const assertRoute = (
   pattern: string | RegExp,
   location: string,
-  rhs: false | Match | Record<string, string | undefined>,
+  rhs: false | Match | Record<string, string | undefined>
 ) => {
   const { result } = renderHook(() => useRoute(pattern), {
     wrapper: (props) => (

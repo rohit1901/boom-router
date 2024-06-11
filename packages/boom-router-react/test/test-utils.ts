@@ -4,7 +4,7 @@
  */
 export const waitForHashChangeEvent = async (
   cb: () => void,
-  throwAfter = 1000,
+  throwAfter = 1000
 ) =>
   new Promise<void>((resolve, reject) => {
     let timeout: ReturnType<typeof setTimeout>;

@@ -250,7 +250,7 @@ export const Link = forwardRef((props, ref) => {
   // handle nested routers and absolute paths
   const href = router.hrefs(
     targetPath[0] === "~" ? targetPath.slice(1) : router.base + targetPath,
-    router, // pass router as a second argument for convinience
+    router // pass router as a second argument for convinience
   );
 
   return asChild && isValidElement(children)
@@ -269,7 +269,7 @@ export const Link = forwardRef((props, ref) => {
 const flattenChildren = (children) =>
   Array.isArray(children)
     ? children.flatMap((c) =>
-        flattenChildren(c && c.type === Fragment ? c.props.children : c),
+        flattenChildren(c && c.type === Fragment ? c.props.children : c)
       )
     : [children];
 
@@ -290,7 +290,7 @@ export const Switch = ({ children, location }) => {
         router.parser,
         element.props.path,
         location || originalLocation,
-        element.props.nest,
+        element.props.nest
       ))[0]
     )
       return cloneElement(element, { match });

@@ -24,7 +24,7 @@ it("returns null as parameters when there was no match", () => {
 
 it("accepts the type of parameters as a generic argument", () => {
   const [match, params] = useRoute<{ id: string; name: string | undefined }>(
-    "/app/users/:name?/:id",
+    "/app/users/:name?/:id"
   );
 
   if (match) {

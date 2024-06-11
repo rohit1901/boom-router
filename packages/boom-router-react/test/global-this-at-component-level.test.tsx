@@ -16,7 +16,7 @@ describe("useSearch", () => {
     const rendered = renderToStaticMarkup(
       <Router ssrSearch="?foo=1">
         <App />
-      </Router>,
+      </Router>
     );
     expect(rendered).toBe("foo=1");
   });
@@ -41,7 +41,7 @@ test("useLocation works in node", () => {
   const rendered = renderToStaticMarkup(
     <Router ssrPath="/hello-from-server">
       <App />
-    </Router>,
+    </Router>
   );
   expect(rendered).toBe("/hello-from-server");
 });

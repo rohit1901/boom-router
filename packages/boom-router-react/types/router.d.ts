@@ -7,7 +7,7 @@ import {
 
 export type Parser = (
   route: Path,
-  loose?: boolean,
+  loose?: boolean
 ) => { pattern: RegExp; keys: string[] };
 
 export type HrefsFormatter = (href: string, router: RouterObject) => string;

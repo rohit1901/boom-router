@@ -11,7 +11,7 @@ const raf = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
 const testRouteRender = (initialPath: string, jsx: ReactElement) => {
   const instance = TestRenderer.create(
-    <Router hook={memoryLocation({ path: initialPath }).hook}>{jsx}</Router>,
+    <Router hook={memoryLocation({ path: initialPath }).hook}>{jsx}</Router>
   ).root;
 
   return instance;
@@ -37,7 +37,7 @@ it("always renders no more than 1 matched children", () => {
       <Route path="/users/:rest*">
         <h3 />
       </Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -53,7 +53,7 @@ it("ignores mixed children", () => {
     <Switch>
       Here is a<Route path="/users">route</Route>
       route
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -72,7 +72,7 @@ it("ignores falsy children", () => {
       {null}
       {undefined}
       <Route path="/users">route</Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -92,7 +92,7 @@ it("matches regular components as well", () => {
     <Switch>
       <Dummy path="/">Component</Dummy>
       <b>Bold</b>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -107,7 +107,7 @@ it("allows to specify which routes to render via `location` prop", () => {
     "/something-different",
     <Switch location="/users">
       <Route path="/users">route</Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -129,7 +129,7 @@ it("always ensures the consistency of inner routes rendering", async () => {
           return null;
         }}
       </Route>
-    </Switch>,
+    </Switch>
   );
 
   await act(async () => {
@@ -150,7 +150,7 @@ it("supports catch-all routes with wildcard segments", async () => {
       <Route path="/:anything*">
         <h2 />
       </Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -170,7 +170,7 @@ it("uses a route without a path prop as a fallback", async () => {
       <Route>
         <h2 />
       </Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -195,7 +195,7 @@ it("correctly handles arrays as children", async () => {
       <Route>
         <h4 />
       </Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
@@ -222,7 +222,7 @@ it("correctly handles fragments as children", async () => {
       <Route>
         <h4 />
       </Route>
-    </Switch>,
+    </Switch>
   );
 
   // @ts-expect-error
