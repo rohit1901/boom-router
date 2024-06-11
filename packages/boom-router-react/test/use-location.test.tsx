@@ -16,7 +16,7 @@ import { memoryLocation } from "boom-router/memory-location";
 import { Router, useLocation } from "boom-router";
 
 function createContainer(
-  options: Omit<ComponentProps<typeof Router>, "children"> = {}
+  options: Omit<ComponentProps<typeof Router>, "children"> = {},
 ) {
   return ({ children }: { children: ReactNode }) => (
     <Router {...options}>{children}</Router>
@@ -119,10 +119,10 @@ describe.each([
       });
 
       await stub.act(() =>
-        stub.navigate("/пользователи/показать все/101/げんきです")
+        stub.navigate("/пользователи/показать все/101/げんきです"),
       );
       expect(result.current[0]).toBe(
-        "/пользователи/показать все/101/げんきです"
+        "/пользователи/показать все/101/げんきです",
       );
 
       await stub.act(() => stub.navigate("/%D1%88%D0%B5%D0%BB%D0%BB%D1%8B"));

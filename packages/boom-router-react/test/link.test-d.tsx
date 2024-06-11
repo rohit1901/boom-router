@@ -4,7 +4,7 @@ import * as React from "react";
 
 type NetworkLocationHook = () => [
   Path,
-  (path: string, options: { host: string; retries?: number }) => void
+  (path: string, options: { host: string; retries?: number }) => void,
 ];
 
 describe("<Link /> types", () => {

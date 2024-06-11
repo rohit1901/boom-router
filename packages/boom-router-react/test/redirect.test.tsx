@@ -33,7 +33,7 @@ it("supports `base` routers with relative path", () => {
   const { unmount } = render(
     <Router base="/app">
       <Redirect to="/nested" />
-    </Router>
+    </Router>,
   );
 
   expect(location.pathname).toBe("/app/nested");
@@ -44,7 +44,7 @@ it("supports `base` routers with absolute path", () => {
   const { unmount } = render(
     <Router base="/app">
       <Redirect to="~/absolute" />
-    </Router>
+    </Router>,
   );
 
   expect(location.pathname).toBe("/absolute");
@@ -75,7 +75,7 @@ it("useLayoutEffect should return nothing", () => {
     // @ts-expect-error
     <Router hook={customHookWithReturn()}>
       <Redirect to="/users" replace />
-    </Router>
+    </Router>,
   );
 
   expect(location.pathname).toBe("/users");

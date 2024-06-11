@@ -64,16 +64,6 @@ jobs:
         with:
           version: ${{ steps.version-bump-dry-run.outputs.new_tag }}
           path: './packages/boom-router-react/package.json'
-      # Bump version and push tag
-      - name: Bump version and push tag
-        id: version-bump
-        if: ${{ success() }}
-        uses: anothrNick/github-tag-action@1.67.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INITIAL_VERSION: ${{ steps.package-version.outputs.current-version }}
-          DEFAULT_BUMP: ${{ env.RELEASE_TYPE }}
-          DEFAULT_BRANCH: ${{ github.event.pull_request.head.ref }}
       # Commit changes
       - name: Commit changes using git-auto-commit-action@v5
         uses: stefanzweifel/git-auto-commit-action@v5

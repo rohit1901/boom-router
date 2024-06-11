@@ -12,208 +12,133 @@
 
 ## Features
 
-- Minimum dependencies, only **2.1 KB** gzipped vs 18.7KB
+- Only essential dependencies, just **2.1 KB** gzipped vs 18.7KB
   [React Router](https://github.com/ReactTraining/react-router).
-- No top-level `<Router />` component, it is **fully optional**.
-- Mimics [React Router](https://github.com/ReactTraining/react-router)'s best practices by providing
-  familiar **[`Route`](#route-pathpattern-)**, **[`Link`](#link-hrefpath-)**,
-  **[`Switch`](#switch-)** and **[`Redirect`](#redirect-topath-)** components.
-- Has hook-based API for more granular control over routing (like animations):
+- Unpacked Size is **280 KB** vs **810 KB** [React Router](hhttps://github.com/ReactTraining/react-router).
+- **Fully optional** top-level `<Router />` component.
+- Familiar components: **[`Route`](#route-pathpattern-)**, **[`Link`](#link-hrefpath-)**,
+  **[`Switch`](#switch-)** and **[`Redirect`](#redirect-topath-)**.
+- Hook-based API:
   **[`useLocation`](#uselocation-working-with-the-history)**,
   **[`useRoute`](#useroute-route-matching-and-parameters)** and
   **[`useRouter`](#userouter-accessing-the-router-object)**.
 
-## Table of Contents
-
-- [Getting Started](#getting-started)
-    - [Browser Support](#browser-support)
-- [Boom Router API](#boom-router-api)
-    - [The list of methods available](#the-list-of-methods-available)
-- [Hooks API](#hooks-api)
-    - [`useRoute`: route matching and parameters](#useroute-route-matching-and-parameters)
-    - [`useLocation`: working with the history](#uselocation-working-with-the-history)
-        - [Additional navigation parameters](#additional-navigation-parameters)
-        - [Customizing the location hook](#customizing-the-location-hook)
-    - [`useParams`: extracting matched parameters](#useparams-extracting-matched-parameters)
-    - [`useSearch`: query strings](#usesearch-query-strings)
-    - [`useRouter`: accessing the router object](#userouter-accessing-the-router-object)
-- [Component API](#component-api)
-
-    - [`<Route path={pattern} />`](#route-pathpattern-)
-        - [Route nesting](#route-nesting)
-    - [`<Link href={path} />`](#link-hrefpath-)
-    - [`<Switch />`](#switch-)
-    - [`<Redirect to={path} />`](#redirect-topath-)
-    - [`<Router hook={hook} parser={fn} base={basepath} />`](#router-hookhook-parserfn-basebasepath-)
-
-- [FAQ and Code Recipes](#faq-and-code-recipes)
-    - [I deploy my app to the subfolder. Can I specify a base path?](#i-deploy-my-app-to-the-subfolder-can-i-specify-a-base-path)
-    - [How do I make a default route?](#how-do-i-make-a-default-route)
-    - [How do I make a link active for the current route?](#how-do-i-make-a-link-active-for-the-current-route)
-    - [Are strict routes supported?](#are-strict-routes-supported)
-    - [Are relative routes and links supported?](#are-relative-routes-and-links-supported)
-    - [Can I initiate navigation from outside a component?](#can-i-initiate-navigation-from-outside-a-component)
-    - [Can I use _boom-router_ in my TypeScript project?](#can-i-use-boom-router-in-my-typescript-project)
-    - [How can add animated route transitions?](#how-can-add-animated-route-transitions)
-    - [Preact support?](#preact-support)
-    - [Server-side Rendering support (SSR)?](#server-side-rendering-support-ssr)
-    - [How do I configure the router to render a specific route in tests?](#how-do-i-configure-the-router-to-render-a-specific-route-in-tests)
-    - [1KB is too much, I can't afford it!](#1kb-is-too-much-i-cant-afford-it)
-
-## Getting Started
-
-First, add boom-router to your project.
+## Installation
 
 ```bash
 npm i boom-router
 ```
 
-Check out this simple demo app below. It doesn't cover hooks and other features such as nested routing, but it's a good starting point for those who are migrating from React Router.
+Check out this [simple demo app](https://github.com/rohit1901/react-boilerplate). It uses boom-router and has a minimalistic setup.
 
 ```js
 import { Link, Route, Switch } from "boom-router";
 
 const App = () => (
-  <>
-    <Link href="/users/1">Profile</Link>
-
-    <Route path="/about">About Us</Route>
-
-    {/* 
-      Routes below are matched exclusively -
-      the first matched route gets rendered
-    */}
-    <Switch>
-      <Route path="/inbox" component={InboxPage} />
-
-      <Route path="/users/:name">
-        {(params) => <>Hello, {params.name}!</>}
-      </Route>
-
-      {/* Default route in a switch */}
-      <Route>404: No such page!</Route>
-    </Switch>
-  </>
+        <>
+          <Link href="/users/1">User Profile</Link>
+          <Route path="/about">About</Route>
+          <Switch>
+            <Route path="/mail" component={InboxPage} />
+            <Route path="/users/:name">{(params) => <>Ssup, {params.name}?</>}</Route>
+            <Route>404: Page not found!</Route>
+          </Switch>
+        </>
 );
+
 ```
 
 ### Browser Support
 
-This library is designed for **ES2020+** compatibility. If you need to support older browsers, make sure that you transpile `node_modules`. Additionally, the minimum supported TypeScript version is 4.1 in order to support route parameter inference.
+Supports **ES2020+**. For older browsers, transpile node_modules. Minimum TypeScript version: 4.1.
 
 ## Boom Router API
 
-Boom Router comes with three kinds of APIs: low-level **standalone location hooks**, hooks for **routing and pattern matching** and more traditional **component-based
-API** similar to React Router's one.
+`boom-router` provides three APIs: **standalone location hooks**, **routing and pattern matching hooks**, and a **component-based API** similar to 
+React Router.
 
-You are free to choose whatever works for you: use location hooks when you want to keep your app as small as
-possible and don't need pattern matching; use routing hooks when you want to build custom routing components; or if you're building a traditional app
-with pages and navigation — components might come in handy.
+Choose the one that fits your needs:
 
-Check out also [FAQ and Code Recipes](#faq-and-code-recipes) for more advanced things like active
-links, default routes, server-side rendering etc.
+- For a compact application without pattern matching, use location hooks.
+- To create custom routing components, use routing hooks.
+- For traditional applications with pages and navigation, use the component-based API.
 
-### The list of methods available
+Check out the [FAQ and Code Recipes](#faq-and-code-recipes) for advanced topics like active links, default routes, and server-side rendering.
+
+### Available Methods
 
 **Location Hooks**
 
-These can be used separately from the main module and have an interface similar to `useState`. These hooks don't support nesting, base path, route matching.
+Location hooks work independently of the main module, similar to `useState`, but do not support nesting, base paths, or route matching.
 
-- **[`import { useBrowserLocation } from "boom-router/use-browser-location"`](https://github.com/rohit1901/boom-router/blob/v3/packages/boom-router/src/use-browser-location.js)** —
-  allows to manipulate current location in the browser's address bar, a tiny wrapper around the History API.
-- **[`import { useHashLocation } from "boom-router/use-hash-location"`](https://github.com/rohit1901/boom-router/blob/v3/packages/boom-router/src/use-hash-location.js)** — similarly, gets location from the hash part of the address, i.e. the string after a `#`.
-- **[`import { memoryLocation } from "boom-router/memory-location"`](#uselocation-working-with-the-history)** — an in-memory location hook with history support, external navigation and immutable mode for testing. **Note** the module name because it is a high-order hook. See how memory location can be used in [testing](#how-do-i-configure-the-router-to-render-a-specific-route-in-tests).
+- `useBrowserLocation`: Manipulates the browser's address bar location. Import with `import { useBrowserLocation } from "boom-router/use-browser-location"`.
+- `useHashLocation`: Retrieves the location from the hash part of the address. Import with `import { useHashLocation } from "boom-router/use-hash-location"`.
+- `memoryLocation`: An in-memory location hook for history, external navigation, and testing in immutable mode. Import with `import { memoryLocation } from "boom-router/memory-location"`.
 
 **Routing Hooks**
 
-Import from `boom-router` module.
+Routing hooks are available from the `boom-router` module.
 
-- **[`useRoute`](#useroute-the-power-of-hooks)** — shows whether or not current page matches the
-  pattern provided.
-- **[`useLocation`](#uselocation-working-with-the-history)** — allows to manipulate current
-  router's location, by default subscribes to browser location. **Note:** this isn't the same as `useBrowserLocation`, read below.
-- **[`useParams`](#useparams-extracting-matched-parameters)** — returns an object with parameters matched from the closest route.
-- **[`useSearch`](#usesearch-query-strings)** — returns a search string – everything that goes after the `?`.
-- **[`useRouter`](#userouter-accessing-the-router-object)** — returns a global router object that
-  holds the configuration. Only use it if you want to customize the routing.
+- `useRoute`: Indicates if the current page matches a given pattern.
+- `useLocation`: Manipulates the current router's location, subscribing to the browser location by default.
+- `useParams`: Returns an object with parameters from the closest route.
+- `useSearch`: Returns the search string after the `?`.
+- `useRouter`: Returns a global router object for custom routing.
 
 **Components**
 
-Import from `boom-router` module.
+Components are also available from the `boom-router` module.
 
-- **[`<Route />`](#route-pathpattern-)** — conditionally renders a component based on a pattern.
-- **[`<Link />`](#link-hrefpath-)** — wraps `<a>`, allows to perfom a navigation.
-- **[`<Switch />`](#switch-)** — exclusive routing, only renders the first matched route.
-- **[`<Redirect />`](#redirect-topath-)** — when rendered, performs an immediate navigation.
-- **[`<Router />`](#router-hookhook-matchermatchfn-basebasepath-)** — an optional top-level
-  component for advanced routing configuration.
+- `Route`: Conditionally renders a component based on a pattern.
+- `Link`: Wraps an `<a>` tag for navigation.
+- `Switch`: Provides exclusive routing, rendering only the first matched route.
+- `Redirect`: Performs immediate navigation when rendered.
+- `Router`: An optional top-level component for advanced routing configuration.
 
 ## Hooks API
 
-### `useRoute`: route matching and parameters
+**`useRoute`: Route Matching and Parameters**
 
-Checks if the current location matches the pattern provided and returns an object with parameters. This is powered by a wonderful [`regexparam`](https://github.com/lukeed/regexparam) library, so all its pattern syntax is fully supported.
+The `useRoute` hook checks if the current location matches a provided pattern and returns parameters using the [`regexparam`](https://github.com/lukeed/regexparam) library's pattern syntax.
 
-You can use `useRoute` to perform manual routing or implement custom logic, such as route transitions, etc.
+Use `useRoute` for manual routing or to implement custom logic, such as route transitions.
 
 ```js
 import { useRoute } from "boom-router";
 
 const Users = () => {
-  // `match` is a boolean
   const [match, params] = useRoute("/users/:name");
 
-  if (match) {
-    return <>Hello, {params.name}!</>;
-  } else {
-    return null;
-  }
+  return match ? <>Hello, {params.name}!</> : null;
 };
 ```
 
-A quick cheatsheet of what types of segments are supported:
+Examples to build your segment types:
 
 ```js
 useRoute("/app/:page");
 useRoute("/app/:page/:section");
-
-// optional parameter, matches "/en/home" and "/home"
 useRoute("/:locale?/home");
-
-// suffixes
 useRoute("/movies/:title.(mp4|mov)");
-
-// wildcards, matches "/app", "/app-1", "/app/home"
 useRoute("/app*");
-
-// optional wildcards, matches "/orders", "/orders/"
-// and "/orders/completed/list"
 useRoute("/orders/*?");
-
-// regex for matching complex patterns,
-// matches "/hello:123"
 useRoute(/^[/]([a-z]+):([0-9]+)[/]?$/);
-// and with named capture groups
 useRoute(/^[/](?<word>[a-z]+):(?<num>[0-9]+)[/]?$/);
 ```
 
-The second item in the pair `params` is an object with parameters or null if there was no match. For wildcard segments the parameter name is `"*"`:
+The `params` object contains parameters or null if there was no match. For wildcard segments, the parameter name is `"*"`:
 
 ```js
-// wildcards, matches "/app", "/app-1", "/app/home"
 const [match, params] = useRoute("/app*");
 
 if (match) {
-  // "/home" for "/app/home"
   const page = params["*"];
 }
 ```
 
-### `useLocation`: working with the history
+**`useLocation`: Managing History**
 
-To get the current path and navigate between pages, call the `useLocation` hook. Similarly to `useState`, it returns a value and a setter: the component will re-render when the location changes and by calling `navigate` you can update this value and perform navigation.
-
-By default, it uses `useBrowserLocation` under the hood, though you can configure this in a top-level `Router` component (for example, if you decide at some point to switch to a hash-based routing). `useLocation` will also return scoped path when used within nested routes or with base path setting.
+The `useLocation` hook returns the current path and a setter function for navigation. Components re-render when the location changes.
 
 ```js
 import { useLocation } from "boom-router";
@@ -223,44 +148,30 @@ const CurrentLocation = () => {
 
   return (
     <div>
-      {`The current page is: ${location}`}
-      <a onClick={() => setLocation("/somewhere")}>Click to update</a>
+      Current page: {location}
+      <a onClick={() => setLocation("/somewhere")}>Update</a>
     </div>
   );
 };
 ```
 
-All the components internally call the `useLocation` hook.
+All components internally use the `useLocation` hook.
 
-#### Additional navigation parameters
+**Additional Navigation Parameters**
 
-The setter method of `useLocation` can also accept an optional object with parameters to control how
-the navigation update will happen.
-
-When browser location is used (default), `useLocation` hook accepts `replace` flag to tell the hook to modify the current
-history entry instead of adding a new one. It is the same as calling `replaceState`.
+The setter method of `useLocation` can accept an optional object with parameters to control navigation updates.
 
 ```jsx
 const [location, navigate] = useLocation();
 
-navigate("/jobs"); // `pushState` is used
-navigate("/home", { replace: true }); // `replaceState` is used
-```
-
-Additionally, you can provide a `state` option to update `history.state` while navigating:
-
-```jsx
+navigate("/jobs");
+navigate("/home", { replace: true });
 navigate("/home", { state: { modal: "promo" } });
-
-history.state; // { modal: "promo" }
 ```
 
-#### Customizing the location hook
+**Customizing the Location Hook**
 
-By default, **boom-router** uses `useLocation` hook that reacts to `pushState` and `replaceState`
-navigation via `useBrowserLocation`.
-
-To customize this, wrap your app in a `Router` component:
+To customize the location hook, wrap your app in a `Router` component:
 
 ```js
 import { Router, Route } from "boom-router";
@@ -269,18 +180,13 @@ import { useHashLocation } from "boom-router/use-hash-location";
 const App = () => (
   <Router hook={useHashLocation}>
     <Route path="/about" component={About} />
-    ...
   </Router>
 );
 ```
 
-Because these hooks have return values similar to `useState`, it is easy and fun to build your own location hooks: `useCrossTabLocation`, `useLocalStorage`, `useMicroFrontendLocation` and whatever routing logic you want to support in the app. Give it a try!
+**`useParams`: Extracting Matched Parameters**
 
-### `useParams`: extracting matched parameters
-
-This hook allows you to access the parameters exposed through [matching dynamic segments](#matching-dynamic-segments). Internally, we simply wrap your components in a context provider allowing you to access this data anywhere within the `Route` component.
-
-This allows you to avoid "prop drilling" when dealing with deeply nested components within the route. **Note:** `useParams` will only extract parameters from the closest parent route.
+The `useParams` hook allows access to parameters exposed through matching dynamic segments.
 
 ```js
 import { Route, useParams } from "boom-router";
@@ -288,54 +194,26 @@ import { Route, useParams } from "boom-router";
 const User = () => {
   const params = useParams();
 
-  params.id; // "1"
-
-  // alternatively, use the index to access the prop
-  params[0]; // "1"
+  return <>Hello, {params.id || params[0]}!</>;
 };
 
-<Route path="/user/:id" component={User}> />
+<Route path="/user/:id" component={User} />
+<Route path={/^[/]user[/](?<id>[0-9]+)[/]?$/} component={User} />
 ```
 
-It is the same for regex paths. Capture groups can be accessed by their index, or if there is a named capture group, that can be used instead.
+**`useSearch`: Query Strings**
 
-```js
-import { Route, useParams } from "boom-router";
-
-const User = () => {
-  const params = useParams();
-
-  params.id; // "1"
-  params[0]; // "1"
-};
-
-<Route path={/^[/]user[/](?<id>[0-9]+)[/]?$/} component={User}> />
-```
-
-### `useSearch`: query strings
-
-Use this hook to get the current search (query) string value. It will cause your component to re-render only when the string itself and not the full location updates. The search string returned **does not** contain a `?` character.
+The `useSearch` hook returns the current search string value.
 
 ```jsx
 import { useSearch } from "boom-router";
 
-// returns "tab=settings&id=1"
-// the hook for extracting search parameters is coming soon!
 const searchString = useSearch();
 ```
 
-For the SSR, use `ssrSearch` prop passed to the router.
+**`useRouter`: Accessing the Router Object**
 
-```jsx
-<Router ssrSearch={request.search}>{/* SSR! */}</Router>
-```
-
-Refer to [Server-Side Rendering](#server-side-rendering-support-ssr) for more info on rendering and hydration.
-
-### `useRouter`: accessing the router object
-
-If you're building advanced integration, for example custom location hook, you might want to get
-access to the global router object. Router is a simple object that holds routing options that you configure in the `Router` component.
+The `useRouter` hook allows access to the global router object.
 
 ```js
 import { useRouter } from "boom-router";
@@ -343,14 +221,13 @@ import { useRouter } from "boom-router";
 const Custom = () => {
   const router = useRouter();
 
-  router.hook; // `useBrowserLocation` by default
-  router.base; // "/app"
+  return <>Base: {router.base}</>;
 };
 
 const App = () => (
-  <Router base="/app">
-    <Custom />
-  </Router>
+        <Router base="/app">
+          <Custom />
+        </Router>
 );
 ```
 
@@ -358,26 +235,26 @@ const App = () => (
 
 ### `<Route path={pattern} />`
 
-`Route` represents a piece of the app that is rendered conditionally based on a pattern `path`. Pattern has the same syntax as the argument you pass to [`useRoute`](#useroute-route-matching-and-parameters).
+The `Route` component renders a part of the app conditionally based on the provided pattern in the `path` prop. The pattern syntax mirrors what you pass to [`useRoute`](#useroute-route-matching-and-parameters).
 
-The library provides multiple ways to declare a route's body:
+There are multiple ways to declare a route's body:
 
 ```js
 import { Route } from "boom-router";
 
-// simple form
+// Simple form
 <Route path="/home"><Home /></Route>
 
-// render-prop style
+// Render-prop style
 <Route path="/users/:id">
   {params => <UserPage id={params.id} />}
 </Route>
 
-// the `params` prop will be passed down to <Orders />
+// The `params` prop will be passed down to <Orders />
 <Route path="/orders/:status" component={Orders} />
 ```
 
-A route with no path is considered to always match, and it is the same as `<Route path="*" />`. When developing your app, use this trick to peek at the route's content without navigation.
+A route with no path is considered to always match, equivalent to `<Route path="*" />`. During app development, use this technique to peek at the route's content without navigating.
 
 ```diff
 -<Route path="/some/page">
@@ -388,9 +265,9 @@ A route with no path is considered to always match, and it is the same as `<Rout
 
 #### Route Nesting
 
-Nesting is a core feature of boom-router and can be enabled on a route via the `nest` prop. When this prop is present, the route matches everything that starts with a given pattern and it creates a nested routing context. All child routes will receive location relative to that pattern.
+Nesting is a core feature of boom-router and can be enabled on a route via the `nest` prop. When this prop is present, the route matches everything that starts with a given pattern, creating a nested routing context. All child routes will receive a location relative to that pattern.
 
-Let's take a look at this example:
+Consider this example:
 
 ```js
 <Route path="/app" nest>
@@ -400,13 +277,13 @@ Let's take a look at this example:
 </Route>
 ```
 
-1. This first route will be active for all paths that start with `/app`, this is equivalent to having a base path in your app.
+1. The first route is active for all paths that start with `/app`, equivalent to having a base path in your app.
 
-2. The second one uses dynamic pattern to match paths like `/app/user/1`, `/app/user/1/anything` and so on.
+2. The second one uses a dynamic pattern to match paths like `/app/user/1`, `/app/user/1/anything`, and so on.
 
-3. Finally, the inner-most route will only work for paths that look like `/app/users/1/orders`. The match is strict, since that route does not have a `nest` prop and it works as usual.
+3. The inner-most route will only work for paths like `/app/users/1/orders`. The match is strict, as that route does not have a `nest` prop and works as usual.
 
-If you call `useLocation()` inside the last route, it will return `/orders` and not `/app/users/1/orders`. This creates a nice isolation and it makes it easier to make changes to parent route without worrying that the rest of the app will stop working. If you need to navigate to a top-level page however, you can use a prefix `~` to refer to an absolute path:
+If you call `useLocation()` inside the last route, it will return `/orders`, not `/app/users/1/orders`. This creates isolation, making it easier to make changes to the parent route without affecting the rest of the app. To navigate to a top-level page, use a `~` prefix to refer to an absolute path:
 
 ```js
 <Route path="/payments" nest>
@@ -416,14 +293,11 @@ If you call `useLocation()` inside the last route, it will return `/orders` and 
 </Route>
 ```
 
-**Note:** The `nest` prop does not alter the regex passed into regex paths.
-Instead, the `nest` prop will only determine if nested routes will match against the rest of path or the same path.
-To make a strict path regex, use a regex pattern like `/^[/](your pattern)[/]?$/` (this matches an optional end slash and the end of the string).
-To make a nestable regex, use a regex pattern like `/^[/](your pattern)(?=$|[/])/` (this matches either the end of the string or a slash for future segments).
+**Note:** The `nest` prop does not alter the regex passed into regex paths. Instead, it determines if nested routes will match against the rest of the path or the same path. To make a strict path regex, use a regex pattern like `/^[/](your pattern)[/]?$/` (this matches an optional end slash and the end of the string). To make a nestable regex, use a regex pattern like `/^[/](your pattern)(?=$|[/])/` (this matches either the end of the string or a slash for future segments).
 
 ### `<Link href={path} />`
 
-Link component renders an `<a />` element that, when clicked, performs a navigation.
+The `Link` component renders an `<a />` element that, when clicked, navigates to the specified path.
 
 ```js
 import { Link } from "boom-router";
@@ -433,26 +307,26 @@ import { Link } from "boom-router";
 // `to` is an alias for `href`
 <Link to="/">Home</Link>
 
-// all standard `a` props are proxied
+// All standard `a` props are proxied
 <Link href="/" className="link" aria-label="Go to homepage">Home</Link>
 
-// all location hook options are supported
+// All location hook options are supported
 <Link href="/" replace state={{ animate: true }} />
 ```
 
-Link will always wrap its children in an `<a />` tag, unless `asChild` prop is provided. Use this when you need to have a custom component that renders an `<a />` under the hood.
+The `Link` always wraps its children in an `<a />` tag, unless the `asChild` prop is provided. Use this when you need a custom component that renders an `<a />` under the hood.
 
 ```jsx
-// use this instead
+// Use this instead
 <Link to="/" asChild>
   <UIKitLink />
 </Link>
 
 // Remember, `UIKitLink` must implement an `onClick` handler
-// in order for navigation to work!
+// for navigation to work!
 ```
 
-When you pass a function as a `className` prop, it will be called with a boolean value indicating whether the link is active for the current route. You can use this to style active links (e.g. for links in navigation menu)
+When you pass a function as the `className` prop, it will be called with a boolean value indicating whether the link is active for the current route. Use this to style active links, such as links in the navigation menu:
 
 ```jsx
 <Link className={(active) => (active ? "active" : "")}>Nav</Link>
@@ -462,9 +336,7 @@ Read more about [active links here](#how-do-i-make-a-link-active-for-the-current
 
 ### `<Switch />`
 
-There are cases when you want to have an exclusive routing: to make sure that only one route is
-rendered at the time, even if the routes have patterns that overlap. That's what `Switch` does: it
-only renders **the first matching route**.
+In some cases, you may want exclusive routing to ensure that only one route is rendered at a time, even if the routes have overlapping patterns. This is where `Switch` comes in: it only renders **the first matching route**.
 
 ```js
 import { Route, Switch } from "boom-router";
@@ -474,36 +346,33 @@ import { Route, Switch } from "boom-router";
   <Route path="/orders/:status" component={Orders} />
 
   {/* 
-     in boom-router, any Route with empty path is considered always active. 
-     This can be used to achieve "default" route behaviour within Switch. 
+     In boom-router, any Route with an empty path is considered always active. 
+     This can be used to achieve "default" route behavior within Switch. 
      Note: the order matters! See examples below.
   */}
   <Route>This is rendered when nothing above has matched</Route>
 </Switch>;
 ```
 
-When no route in switch matches, the last empty `Route` will be used as a fallback. See [**FAQ and Code Recipes** section](#how-do-i-make-a-default-route) to read about default routes.
+When no route in the switch matches, the last empty `Route` will be used as a fallback. See [**FAQ and Code Recipes** section](#how-do-i-make-a-default-route) for default route information.
 
 ### `<Redirect to={path} />`
 
-When mounted performs a redirect to a `path` provided. Uses `useLocation` hook internally to trigger
-the navigation inside of a `useEffect` block.
+When mounted, `Redirect` performs a redirect to the provided `path`. It uses the `useLocation` hook internally to trigger navigation within a `useEffect` block.
 
-`Redirect` can also accept props for [customizing how navigation will be performed](#additional-navigation-parameters), for example for setting history state when navigating. These options are specific to the currently used location hook.
+`Redirect` can also accept props for [customizing how navigation will be performed](#additional-navigation-parameters), such as setting history state when navigating. These options are specific to the currently used location hook.
 
 ```jsx
 <Redirect to="/" />
 
-// arbitrary state object
+// Arbitrary state object
 <Redirect to="/" state={{ modal: true }} />
 
-// use `replaceState`
+// Use `replaceState`
 <Redirect to="/" replace />
 ```
 
-If you need more advanced logic for navigation, for example, to trigger the redirect inside of an
-event handler, consider using
-[`useLocation` hook instead](#uselocation-working-with-the-history):
+If you need more advanced logic for navigation, such as triggering the redirect inside an event handler, consider using [`useLocation` hook instead](#uselocation-working-with-the-history):
 
 ```js
 import { useLocation } from "boom-router";
@@ -518,12 +387,9 @@ fetchOrders().then((orders) => {
 
 ### `<Router hook={hook} parser={fn} base={basepath} hrefs={fn} />`
 
-Unlike _React Router_, routes in boom-router **don't have to be wrapped in a top-level component**. An
-internal router object will be constructed on demand, so you can start writing your app without
-polluting it with a cascade of top-level providers. There are cases however, when the routing
-behaviour needs to be customized.
+Unlike _React Router_, routes in boom-router **don't have to be wrapped in a top-level component**. An internal router object will be constructed on demand, allowing you to start writing your app without a cascade of top-level providers. However, there are cases when the routing behavior needs to be customized.
 
-These cases include hash-based routing, basepath support, custom matcher function etc.
+These cases include hash-based routing, basepath support, custom matcher function, etc.
 
 ```jsx
 import { useHashLocation } from "boom-router/use-hash-location";
@@ -533,40 +399,31 @@ import { useHashLocation } from "boom-router/use-hash-location";
 </Router>;
 ```
 
-A router is a simple object that holds the routing configuration options. You can always obtain this
-object using a [`useRouter` hook](#userouter-accessing-the-router-object). The list of currently
-available options:
+A router is a simple object that holds the routing configuration options. You can always obtain this object using the [`useRouter` hook](#userouter-accessing-the-router-object). The list of currently available options:
 
-- **`hook: () => [location: string, setLocation: fn]`** — is a React Hook function that subscribes
-  to location changes. It returns a pair of current `location` string e.g. `/app/users` and a
-  `setLocation` function for navigation. You can use this hook from any component of your app by
-  calling [`useLocation()` hook](#uselocation-working-with-the-history). See [Customizing the location hook](#customizing-the-location-hook).
+- **`hook: () => [location: string, setLocation: fn]`** — a React Hook function that subscribes to location changes. It returns a pair of current `location` string, e.g., `/app/users`, and a `setLocation` function for navigation. You can use this hook from any component of your app by calling [`useLocation()` hook](#uselocation-working-with-the-history). See [Customizing the location hook](#customizing-the-location-hook).
 
 - **`searchHook: () => [search: string, setSearch: fn]`** — similar to `hook`, but for obtaining the [current search string](#usesearch-query-strings).
 
-- **`base: string`** — an optional setting that allows to specify a base path, such as `/app`. All
-  application routes will be relative to that path. To navigate out to an absolute path, prefix your path with an `~`. [See the FAQ](#are-relative-routes-and-links-supported).
+- **`base: string`** — an optional setting that allows you to specify a base path, such as `/app`. All application routes will be relative to that path. To navigate to an absolute path, prefix your path with a `~`. [See the FAQ](#are-relative-routes-and-links-supported).
 
-- **`parser: (path: string, loose?: boolean) => { pattern, keys }`** — a pattern parsing
-  function. Produces a RegExp for matching the current location against the user-defined patterns like
-  `/app/users/:id`. Has the same interface as the [`parse`](https://github.com/lukeed/regexparam?tab=readme-ov-file#regexparamparseinput-regexp) function from `regexparam`. See [this example](#are-strict-routes-supported) that demonstrates custom parser feature.
+- **`parser: (path: string, loose?: boolean) => { pattern, keys }`** — a pattern parsing function. It produces a RegExp for matching the current location against user-defined patterns like `/app/users/:id`. It has the same interface as the [`parse`](https://github.com/lukeed/regexparam?tab=readme-ov-file#regexparamparseinput-regexp) function from `regexparam`. See [this example](#are-strict-routes-supported) that demonstrates the custom parser feature.
 
-- **`ssrPath: string`** and **`ssrSearch: string`** use these when [rendering your app on the server](#server-side-rendering-support-ssr).
+- **`ssrPath: string`** and **`ssrSearch: string`** — use these when [rendering your app on the server](#server-side-rendering-support-ssr).
 
-- `hrefs: (href: boolean) => string` — a function for transforming `href` attribute of an `<a />` element rendered by `Link`. It is used to support hash-based routing. By default, `href` attribute is the same as the `href` or `to` prop of a `Link`. A location hook can also define a `hook.hrefs` property, in this case the `href` will be inferred.
+- `hrefs: (href: boolean) => string` — a function for transforming the `href` attribute of an `<a />` element rendered by `Link`. It is used to support hash-based routing. By default, the `href` attribute is the same as the `href` or `to` prop of a `Link`. A location hook can also define a `hook.hrefs` property; in this case, the `href` will be inferred.
+## Tips and Tricks
 
-## FAQ and Code Recipes
+### Setting a Base Path
 
-### I deploy my app to the subfolder. Can I specify a base path?
-
-You can! Wrap your app with `<Router base="/app" />` component and that should do the trick:
+You can specify a base path for your app by wrapping it with the `<Router base="/app" />` component:
 
 ```js
 import { Router, Route, Link } from "boom-router";
 
 const App = () => (
   <Router base="/app">
-    {/* the link's href attribute will be "/app/users" */}
+    {/* The link's href attribute will be "/app/users" */}
     <Link href="/users">Users</Link>
 
     <Route path="/users">The current path is /app/users!</Route>
@@ -574,23 +431,11 @@ const App = () => (
 );
 ```
 
-Calling `useLocation()` within a route in an app with base path will return a path scoped to the base. Meaning that when base is `"/app"` and pathname is `"/app/users"` the returned string is `"/users"`. Accordingly, calling `navigate` will automatically append the base to the path argument for you.
+When using a base path, `useLocation()` within a route returns a path scoped to the base. For example, with a base of `"/app"`, the returned string for `"/app/users"` is `"/users"`. Navigation with `navigate` will automatically append the base to the path argument for you.
 
-When you have multiple nested routers, base paths are inherited and stack up.
+### Default Route
 
-```js
-<Router base="/app">
-  <Router base="/cms">
-    <Route path="/users">Path is /app/cms/users!</Route>
-  </Router>
-</Router>
-```
-
-### How do I make a default route?
-
-One of the common patterns in application routing is having a default route that will be shown as a
-fallback, in case no other route matches (for example, if you need to render 404 message). In
-**boom-router** this can easily be done as a combination of `<Switch />` component and a default route:
+Create a default route that will be shown as a fallback, in case no other route matches, by combining the `<Switch />` component and a default route:
 
 ```js
 import { Switch, Route } from "boom-router";
@@ -601,54 +446,37 @@ import { Switch, Route } from "boom-router";
 </Switch>;
 ```
 
-_Note:_ the order of switch children matters, default route should always come last.
+**Note:** The order of switch children matters; the default route should always come last.
 
-If you want to have access to the matched segment of the path you can use wildcard parameters:
+For accessing the matched segment of the path, use wildcard parameters:
 
 ```js
 <Switch>
   <Route path="/users">...</Route>
 
-  {/* will match anything that starts with /users/, e.g. /users/foo, /users/1/edit etc. */}
+  {/* Will match anything that starts with /users/, e.g. /users/foo, /users/1/edit etc. */}
   <Route path="/users/*">...</Route>
 
-  {/* will match everything else */}
+  {/* Will match everything else */}
   <Route path="*">
     {(params) => `404, Sorry the page ${params["*"]} does not exist!`}
   </Route>
 </Switch>
 ```
 
-**[▶ Demo Sandbox](https://codesandbox.io/s/boom-router-v3-ts-8q532r)**
+### Active Links
 
-### How do I make a link active for the current route?
-
-Instead of a regular `className` string, provide a function to use custom class when this link matches the current route. Note that it will always perform an exact match (i.e. `/users` will not be active for `/users/1`).
+Make a link active for the current route by providing a function to the `className` prop:
 
 ```jsx
 <Link className={(active) => (active ? "active" : "")}>Nav link</Link>
 ```
 
-If you need to control other props, such as `aria-current` or `style`, you can write your own `<Link />` wrapper
-and detect if the path is active by using the `useRoute` hook.
+For controlling other props, such as `aria-current` or `style`, write a custom `<Link />` wrapper and detect if the path is active by using the `useRoute` hook.
 
-```js
-const [isActive] = useRoute(props.href);
+### Strict Routes
 
-return (
-  <Link {...props} asChild>
-    <a style={isActive ? { color: "red" } : {}}>{props.children}</a>
-  </Link>
-);
-```
-
-**[▶ Demo Sandbox](https://codesandbox.io/s/boom-router-v3-ts-8q532r?file=/src/ActiveLink.tsx)**
-
-### Are strict routes supported?
-
-If a trailing slash is important for your app's routing, you could specify a custom parser. Parser is a method that takes a pattern string and returns a RegExp and an array of parsed key. It uses the signature of a [`parse`](https://github.com/lukeed/regexparam?tab=readme-ov-file#regexparamparseinput-regexp) function from `regexparam`.
-
-Let's write a custom parser based on a popular [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) package that does support strict routes option.
+If a trailing slash is important for your app's routing, specify a custom parser. Here's a custom parser based on the popular `path-to-regexp` package that supports strict routes:
 
 ```js
 import { pathToRegexp } from "path-to-regexp";
@@ -676,15 +504,15 @@ const App = () => (
 );
 ```
 
-### Are relative routes and links supported?
+### Relative Routes and Links
 
-Yes! Any route with `nest` prop present creates a nesting context. Keep in mind, that the location inside a nested route will be scoped.
+Yes! Any route with the `nest` prop creates a nesting context. Keep in mind that the location inside a nested route will be scoped:
 
 ```js
 const App = () => (
   <Router base="/app">
     <Route path="/dashboard" nest>
-      {/* the href is "/app/dashboard/users" */}
+      {/* The href is "/app/dashboard/users" */}
       <Link to="/users" />
 
       <Route path="/users">
@@ -695,9 +523,9 @@ const App = () => (
 );
 ```
 
-### Can I initiate navigation from outside a component?
+### Navigation from Outside a Component
 
-Yes, the `navigate` function is exposed from the `"boom-router/use-browser-location"` module:
+The `navigate` function is exposed from the `"boom-router/use-browser-location"` module:
 
 ```js
 import { navigate } from "boom-router/use-browser-location";
@@ -707,36 +535,13 @@ navigate("/", { replace: true });
 
 It's the same function that is used internally.
 
-### Can I use _boom-router_ in my TypeScript project?
+### Using boom-router in TypeScript
 
-Yes! Although the project isn't written in TypeScript, the type definition files are bundled with
-the package.
+Yes! Although the project isn't written in TypeScript, the type definition files are bundled with the package.
 
-### How can add animated route transitions?
+### Animated Route Transitions
 
-Let's take look at how boom-router routes can be animated with [`framer-motion`](framer.com/motion).
-Animating enter transitions is easy, but exit transitions require a bit more work. We'll use the `AnimatePresence` component that will keep the page in the DOM until the exit animation is complete.
-
-Unfortunately, `AnimatePresence` only animates its **direct children**, so this won't work:
-
-```jsx
-import { motion, AnimatePresence } from "framer-motion";
-
-export const MyComponent = () => (
-  <AnimatePresence>
-    {/* This will not work! `motion.div` is not a direct child */}
-    <Route path="/">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      />
-    </Route>
-  </AnimatePresence>
-);
-```
-
-The workaround is to match this route manually with `useRoute`:
+To animate route transitions with `framer-motion`, match the route manually with `useRoute`. Unfortunately, `AnimatePresence` only animates its **direct children**:
 
 ```jsx
 export const MyComponent = ({ isVisible }) => {
@@ -756,60 +561,29 @@ export const MyComponent = ({ isVisible }) => {
 };
 ```
 
-More complex examples involve using `useRoutes` hook (similar to how React Router does it), but boom-router does not ship it out-of-the-box. 
-Please refer to [this issue](https://github.com/rohit1901/boom-router/issues/414#issuecomment-1954192679) for the workaround.
+### Server-side Rendering Support (SSR)
 
-### Server-side Rendering support (SSR)?
-
-In order to render your app on the server, you'll need to wrap your app with top-level Router and
-specify `ssrPath` prop (usually, derived from current request). Optionally, `Router` accepts `ssrSearch` parameter if need to have access to a search string on a server.
+For server-side rendering, wrap your app with a top-level `Router` and specify `ssrPath` prop:
 
 ```js
 import { renderToString } from "react-dom/server";
 import { Router } from "boom-router";
 
 const handleRequest = (req, res) => {
-  // top-level Router is mandatory in SSR mode
+  // Top-level Router is mandatory in SSR mode
   const prerendered = renderToString(
     <Router ssrPath={req.path} ssrSearch={req.search}>
       <App />
     </Router>
   );
 
-  // respond with prerendered html
+  // Respond with prerendered HTML
 };
 ```
 
-Tip: boom-router can pre-fill `ssrSearch`, if `ssrPath` contains the `?` character. So these are equivalent:
+### Rendering a Specific Route in Tests
 
-```jsx
-<Router ssrPath="/goods?sort=asc" />;
-
-// is the same as
-<Router ssrPath="/goods" ssrSearch="sort=asc" />;
-```
-
-On the client, the static markup must be hydrated in order for your app to become interactive. Note
-that to avoid having hydration warnings, the JSX rendered on the client must match the one used by
-the server, so the `Router` component must be present.
-
-```js
-import { hydrateRoot } from "react-dom/client";
-
-const root = hydrateRoot(
-  domNode,
-  // during hydration, `ssrPath` is set to `location.pathname`,
-  // `ssrSearch` set to `location.search` accordingly
-  // so there is no need to explicitly specify them
-  <Router>
-    <App />
-  </Router>
-);
-```
-
-### How do I configure the router to render a specific route in tests?
-
-Testing with boom-router is no different from testing regular React apps. You often need a way to provide a fixture for the current location to render a specific route. This can be easily done by swapping the normal location hook with `memoryLocation`. It is an initializer function that returns a hook that you can then specify in a top-level `Router`.
+For testing, provide a fixture for the current location to render a specific route by swapping the normal location hook with `memoryLocation`:
 
 ```jsx
 import { render } from "@testing-library/react";
@@ -829,43 +603,9 @@ it("renders a user page", () => {
 });
 ```
 
-The hook can be configured to record navigation history. Additionally, there's a `navigate` function for external navigation.
+### Reducing Bundle Size
 
-```jsx
-it("performs a redirect", () => {
-  const { hook, history, navigate } = memoryLocation({
-    path: "/",
-    // record navigation history
-    record: true,
-  });
-
-  const { container } = render(
-    <Router hook={hook}>
-      <Switch>
-        <Route path="/">Index</Route>
-        <Route path="/orders">Orders</Route>
-
-        <Route>
-          <Redirect to="/orders" />
-        </Route>
-      </Switch>
-    </Router>
-  );
-
-  expect(history).toStrictEqual(["/"]);
-
-  navigate("/unknown/route");
-
-  expect(container.innerHTML).toBe("Orders");
-  expect(history).toStrictEqual(["/", "/unknown/route", "/orders"]);
-});
-```
-
-### 1KB is too much, I can't afford it!
-
-For those who are looking for the smallest possible bundle size, you can use the standalone location hooks that are available in the package.
-For example, `useBrowserLocation` hook which is only **~650 bytes gzipped**
-and manually match the current location with it:
+For those who are looking for the smallest possible bundle size, use the standalone location hooks available in the package. For example, `useBrowserLocation` hook is only **~650 bytes gzipped**:
 
 ```js
 import { useBrowserLocation } from "boom-router/use-browser-location";
@@ -875,6 +615,17 @@ const UsersRoute = () => {
 
   if (location !== "/users") return null;
 
-  // render the route
+  // Render the route
 };
 ```
+
+## Coming Soon
+- Preact support
+
+### Concluding Note
+
+I'd like to extend my gratitude to the authors and contributors of the libraries that have inspired and guided the development of **boom-router**. Your work has been invaluable.
+
+I've put a lot of effort into crafting this library and its documentation. Thank you for considering **boom-router**! I hope you find it helpful in building your applications.
+
+If you have any feedback, suggestions, or issues, please don't hesitate to reach out. Happy coding!
