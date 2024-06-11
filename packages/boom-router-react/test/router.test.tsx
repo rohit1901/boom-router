@@ -102,12 +102,12 @@ it("shares one router instance between components", () => {
       <RouterGetter el={<div />} />
       <RouterGetter el={<div />} />
       <RouterGetter el={<div />} />
-    </>
+    </>,
   );
 
   const uniqRouters = [
     ...new Set<DefaultParams>(
-      root.findAllByType("div").map((x) => x.props.router)
+      root.findAllByType("div").map((x) => x.props.router),
     ),
   ];
   expect(uniqRouters.length).toBe(1);
@@ -222,7 +222,7 @@ it("updates the context when settings are changed", () => {
   const { rerender } = render(
     <Router base="/app">
       <Memoized />
-    </Router>
+    </Router>,
   );
 
   expect(state.renders).toEqual(1);
@@ -231,7 +231,7 @@ it("updates the context when settings are changed", () => {
   rerender(
     <Router base="/app">
       <Memoized />
-    </Router>
+    </Router>,
   );
   expect(state.renders).toEqual(1); // nothing changed
 
@@ -240,7 +240,7 @@ it("updates the context when settings are changed", () => {
   rerender(
     <Router hook={newHook} base="/app">
       <Memoized />
-    </Router>
+    </Router>,
   );
   expect(state.renders).toEqual(2);
   expect(state.base).toEqual("/app");

@@ -37,7 +37,7 @@ it("allows to change the behaviour of route matching", () => {
           {children}
         </Router>
       ),
-    }
+    },
   );
 
   expect(result.current).toStrictEqual([

@@ -27,8 +27,8 @@ export type HookReturnValue<H extends BaseLocationHook> = ReturnType<H>;
 type EmptyInterfaceWhenAnyOrNever<T> = 0 extends 1 & T
   ? {}
   : [T] extends [never]
-  ? {}
-  : T;
+    ? {}
+    : T;
 
 // Returns the type of the navigation options that hook's push function accepts.
 export type HookNavigationOptions<H extends BaseLocationHook> =

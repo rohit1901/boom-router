@@ -1,15 +1,14 @@
 {
   "name": "boom-router",
-  "version": "1.0.1",
-  "description": "Minimalist-friendly ~1.5KB router for React",
+  "version": "1.0.2",
+  "description": "A tiny router for modern React apps that relies on Hooks.",
   "type": "module",
   "keywords": [
     "react",
     "router",
-    "tiny",
+    "minimal",
     "routing",
-    "hooks",
-    "useLocation"
+    "hooks"
   ],
   "files": [
     "esm",
