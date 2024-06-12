@@ -10,9 +10,13 @@
   <b>boom-router</b> is a tiny router for modern React apps that relies on Hooks. <br />
 </div>
 
+Heavily inspired from [wouter](https://github.com/molefrog/wouter) and [React Router](https://github.com/ReactTraining/react-router), boom-router is a minimalistic router that is easy to use and has a small footprint. 
+It is a great choice for small to medium-sized applications that don't need the full power of react-router and is also a great choice for those who 
+want to build their own custom router.
+
 ## Features
 
-- Unpacked Size is **49.5 kB** vs **810 kB** [React Router](hhttps://github.com/ReactTraining/react-router).
+- Unpacked Size is **49.5 kB** vs **810 kB** [React Router](https://github.com/ReactTraining/react-router).
 - **Fully optional** top-level **[`<Router />`](#router-hookhook-parserfn-basebasepath-hrefsfn-)** component.
 - Familiar components: **[`Route`](#route-pathpattern-)**, **[`Link`](#link-hrefpath-)**,
   **[`Switch`](#switch-)** and **[`Redirect`](#redirect-topath-)**.
