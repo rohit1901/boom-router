@@ -47,10 +47,14 @@ const defaultRouter = {
   // customizes how `href` props are transformed for <Link />
   hrefs: (x) => x,
 };
-
+/**
+ * Router context. Used by `useRouter` to get the current router object.
+ */
 const RouterCtx = createContext(defaultRouter);
 
-// gets the closest parent router from the context
+/**
+ * Hook to get the current router object.
+ */
 export const useRouter = () => useContext(RouterCtx);
 
 /**
@@ -59,15 +63,18 @@ export const useRouter = () => useContext(RouterCtx);
  */
 
 const ParamsCtx = createContext({});
-
+/**
+ * Hook to get the matched params from the innermost `Route` component.
+ * @returns {{}}
+ */
 export const useParams = () => useContext(ParamsCtx);
 
-/*
- * Part 1, Hooks API: useRoute and useLocation
+// Hooks API
+/**
+ * Hook to get the current location and navigate function.
+ * @param router
+ * @returns {[string,*|(function(...[*]): *)]}
  */
-
-// Internal version of useLocation to avoid redundant useRouter calls
-
 const useLocationFromRouter = (router) => {
   const [location, navigate] = router.hook(router);
 
@@ -81,9 +88,15 @@ const useLocationFromRouter = (router) => {
     ),
   ];
 };
-
+/**
+ * Hook to get the current location and navigate function.
+ * @returns {[string,*|(function(...[*]): *)]}
+ */
 export const useLocation = () => useLocationFromRouter(useRouter());
-
+/**
+ * Hook to get the current search string.
+ * @returns {string}
+ */
 export const useSearch = () => {
   const router = useRouter();
   return decodeEscapeSequences(
@@ -91,6 +104,14 @@ export const useSearch = () => {
   );
 };
 
+/**
+ * Hook to get the current search string.
+ * @param parser - the parser function to use
+ * @param route - the route to match
+ * @param path - the path to match
+ * @param loose - whether to use loose matching
+ * @returns {[boolean,{},...*[]]|[boolean,null]}
+ */
 const matchRoute = (parser, route, path, loose) => {
   // if the input is a regexp, skip parsing
   const { pattern, keys } =
@@ -139,13 +160,20 @@ const matchRoute = (parser, route, path, loose) => {
     : [false, null];
 };
 
+/**
+ * Hook to match the current route.
+ * @param pattern
+ * @returns {[boolean,{},...*[]]|[boolean,null]}
+ */
 export const useRoute = (pattern) =>
   matchRoute(useRouter().parser, pattern, useLocation()[0]);
 
-/*
- * Part 2, Low Carb Router API: Router, Route, Link, Switch
+// Components API
+/**
+ * Router component. It provides the router object to the child components.
+ * @param children
+ * @param props
  */
-
 export const Router = ({ children, ...props }) => {
   // the router we will inherit from - it is the closest router in the tree,
   // unless the custom `hook` is provided (in that case it's the default one)
@@ -195,7 +223,7 @@ export const Router = ({ children, ...props }) => {
 
   return h(RouterCtx.Provider, { value, children });
 };
-
+// TODO: move this to a separate file
 const h_route = ({ children, component }, params) => {
   // React-Router style `component` prop
   if (component) return h(component, { params });
@@ -203,7 +231,13 @@ const h_route = ({ children, component }, params) => {
   // support render prop or plain children
   return typeof children === "function" ? children(params) : children;
 };
-
+/**
+ * Route component. It renders the child components when the route matches.
+ * @param path
+ * @param nest
+ * @param match
+ * @param renderProps
+ */
 export const Route = ({ path, nest, match, ...renderProps }) => {
   const router = useRouter();
   const [location] = useLocationFromRouter(router);
@@ -221,7 +255,10 @@ export const Route = ({ path, nest, match, ...renderProps }) => {
 
   return h(ParamsCtx.Provider, { value: params, children });
 };
-
+/**
+ * Link component. It renders an anchor element that navigates to the specified path.
+ * @type {React.ForwardRefExoticComponent<React.PropsWithoutRef<{}> & React.RefAttributes<unknown>>}
+ */
 export const Link = forwardRef((props, ref) => {
   const router = useRouter();
   const [currentPath, navigate] = useLocationFromRouter(router);
@@ -278,14 +315,20 @@ export const Link = forwardRef((props, ref) => {
         ref,
       });
 });
-
+// TODO: move this to a separate file
 const flattenChildren = (children) =>
   Array.isArray(children)
     ? children.flatMap((c) =>
         flattenChildren(c && c.type === Fragment ? c.props.children : c)
       )
     : [children];
-
+/**
+ * Switch component. It renders the first child that matches the current location.
+ * @param children
+ * @param location
+ * @returns {React.DetailedReactHTMLElement<{match: ([boolean,{},...*[]]|[boolean,null])}, HTMLElement>|null}
+ * @constructor
+ */
 export const Switch = ({ children, location }) => {
   const router = useRouter();
   const [originalLocation] = useLocationFromRouter(router);
@@ -298,7 +341,7 @@ export const Switch = ({ children, location }) => {
       // we don't require an element to be of type Route,
       // but we do require it to contain a truthy `path` prop.
       // this allows to use different components that wrap Route
-      // inside of a switch, for example <AnimatedRoute />.
+      // inside a switch, for example <AnimatedRoute />.
       (match = matchRoute(
         router.parser,
         element.props.path,
@@ -311,7 +354,12 @@ export const Switch = ({ children, location }) => {
 
   return null;
 };
-
+/**
+ * Redirect component. It navigates to the specified path.
+ * @param props
+ * @returns {null}
+ * @constructor
+ */
 export const Redirect = (props) => {
   const { to, href = to } = props;
   const [, navigate] = useLocation();
