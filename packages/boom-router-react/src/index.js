@@ -17,16 +17,25 @@ import {
   useIsomorphicLayoutEffect,
   useEvent,
 } from "./react-deps.js";
-import { absolutePath, relativePath, unescape, stripQm } from "./paths.js";
+import {
+  transformToAbsolutePath,
+  transformToRelativePath,
+  decodeEscapeSequences,
+  removeLeadingQuestionMark,
+} from "./paths.js";
 
-/*
- * Router and router context. Router is a lightweight object that represents the current
- * routing options: how location is managed, base path etc.
- *
+/**
+ * Router context. Used by `useRouter` to get the current router object.
+ * The router object is a combination of the default router and the
+ * custom options passed to the `Router` component.
+ * @example
+ * ```
+ * const router = useRouter();
+ * console.log(router.base); // the base path of the current router
+ * ```
  * There is a default router present for most of the use cases, however it can be overridden
  * via the <Router /> component.
  */
-
 const defaultRouter = {
   hook: useBrowserLocation,
   searchHook: useBrowserSearch,
@@ -66,8 +75,10 @@ const useLocationFromRouter = (router) => {
   // it can be passed down as an element prop without any performance concerns.
   // (This is achieved via `useEvent`.)
   return [
-    unescape(relativePath(router.base, location)),
-    useEvent((to, navOpts) => navigate(absolutePath(to, router.base), navOpts)),
+    decodeEscapeSequences(transformToRelativePath(router.base, location)),
+    useEvent((to, navOpts) =>
+      navigate(transformToAbsolutePath(to, router.base), navOpts)
+    ),
   ];
 };
 
@@ -75,7 +86,9 @@ export const useLocation = () => useLocationFromRouter(useRouter());
 
 export const useSearch = () => {
   const router = useRouter();
-  return unescape(stripQm(router.searchHook(router)));
+  return decodeEscapeSequences(
+    removeLeadingQuestionMark(router.searchHook(router))
+  );
 };
 
 const matchRoute = (parser, route, path, loose) => {
