@@ -1,49 +1,53 @@
 import { useSyncExternalStore } from "./react-deps.js";
 
-// array of callback subscribed to hash updates
-const listeners = {
+// Array of callbacks subscribed to hash updates
+const hashUpdateListeners = {
   v: [],
 };
 
-const onHashChange = () => listeners.v.forEach((cb) => cb());
+// Function to handle hash changes
+const handleHashChange = () => hashUpdateListeners.v.forEach((cb) => cb());
 
-// we subscribe to `hashchange` only once when needed to guarantee that
-// all listeners are called synchronously
+// Function to subscribe to hash updates
 const subscribeToHashUpdates = (callback) => {
-  if (listeners.v.push(callback) === 1)
-    addEventListener("hashchange", onHashChange);
+  if (hashUpdateListeners.v.push(callback) === 1)
+    addEventListener("hashchange", handleHashChange);
 
   return () => {
-    listeners.v = listeners.v.filter((i) => i !== callback);
-    if (!listeners.v.length) removeEventListener("hashchange", onHashChange);
+    hashUpdateListeners.v = hashUpdateListeners.v.filter((i) => i !== callback);
+    if (!hashUpdateListeners.v.length)
+      removeEventListener("hashchange", handleHashChange);
   };
 };
 
-// leading '#' is ignored, leading '/' is optional
-const currentHashLocation = () => "/" + location.hash.replace(/^#?\/?/, "");
+// Function to get the current hash location
+const getCurrentHashLocation = () => "/" + location.hash.replace(/^#?\/?/, "");
 
+// Function to navigate
 export const navigate = (to, { state = null } = {}) => {
-  // calling `replaceState` allows us to set the history
+  // Calling `replaceState` allows us to set the history
   // state without creating an extra entry
   history.replaceState(
     state,
     "",
-    // keep the current pathname, current query string, but replace the hash
+    // Keep the current pathname, current query string, but replace the hash
     location.pathname +
       location.search +
-      // update location hash, this will cause `hashchange` event to fire
-      // normalise the value before updating, so it's always preceeded with "#/"
+      // Update location hash, this will cause `hashchange` event to fire
+      // Normalize the value before updating, so it's always preceded with "#/"
       (location.hash = `#/${to.replace(/^#?\/?/, "")}`)
   );
 };
 
+// Function to use the hash location
 export const useHashLocation = ({ ssrPath = "/" } = {}) => [
   useSyncExternalStore(
     subscribeToHashUpdates,
-    currentHashLocation,
+    getCurrentHashLocation,
     () => ssrPath
   ),
   navigate,
 ];
 
+// Function to get hrefs
 useHashLocation.hrefs = (href) => "#" + href;

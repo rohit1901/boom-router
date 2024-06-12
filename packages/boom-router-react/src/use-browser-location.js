@@ -28,22 +28,22 @@ const subscribeToLocationUpdates = (callback) => {
 export const useLocationProperty = (fn, ssrFn) =>
   useSyncExternalStore(subscribeToLocationUpdates, fn, ssrFn);
 
-const currentSearch = () => location.search;
+const getCurrentSearch = () => location.search;
 
 export const useSearch = ({ ssrSearch = "" } = {}) =>
-  useLocationProperty(currentSearch, () => ssrSearch);
+  useLocationProperty(getCurrentSearch, () => ssrSearch);
 
-const currentPathname = () => location.pathname;
+const getCurrentPathname = () => location.pathname;
 
 export const usePathname = ({ ssrPath } = {}) =>
   useLocationProperty(
-    currentPathname,
-    ssrPath ? () => ssrPath : currentPathname
+    getCurrentPathname,
+    ssrPath ? () => ssrPath : getCurrentPathname
   );
 
-const currentHistoryState = () => history.state;
+const getCurrentHistoryState = () => history.state;
 export const useHistoryState = () =>
-  useLocationProperty(currentHistoryState, () => null);
+  useLocationProperty(getCurrentHistoryState, () => null);
 
 export const navigate = (to, { replace = false, state = null } = {}) =>
   history[replace ? eventReplaceState : eventPushState](state, "", to);
@@ -52,7 +52,7 @@ export const navigate = (to, { replace = false, state = null } = {}) =>
 // that allows to perform a navigation.
 export const useBrowserLocation = (opts = {}) => [usePathname(opts), navigate];
 
-const patchKey = Symbol.for("boom-router_v3");
+const patchKey = Symbol.for("boom-router-react:history-patch");
 
 // While History API does have `popstate` event, the only
 // proper way to listen to changes via `push/replaceState`

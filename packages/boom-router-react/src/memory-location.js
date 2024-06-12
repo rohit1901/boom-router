@@ -1,9 +1,38 @@
 import mitt from "mitt";
 import { useSyncExternalStore } from "./react-deps.js";
 
-/**
- * In-memory location that supports navigation
- */
+// Function to handle navigation
+const navigateImplementation = (path, history, record, emitter) => {
+  return (newPath, { replace = false } = {}) => {
+    if (record) {
+      if (replace) {
+        history.splice(history.length - 1, 1, newPath);
+      } else {
+        history.push(newPath);
+      }
+    }
+
+    path = newPath;
+    emitter.emit("navigate", newPath);
+  };
+};
+
+// Function to handle subscription
+const subscribeImplementation = (emitter) => {
+  return (cb) => {
+    emitter.on("navigate", cb);
+    return () => emitter.off("navigate", cb);
+  };
+};
+
+// Function to reset the history
+const resetImplementation = (path, history, navigate) => {
+  return () => {
+    // clean history array with mutation to preserve link
+    history.splice(0, history.length);
+    navigate(path);
+  };
+};
 
 export const memoryLocation = ({
   path = "/",
@@ -14,42 +43,25 @@ export const memoryLocation = ({
   const history = [currentPath];
   const emitter = mitt();
 
-  const navigateImplementation = (path, { replace = false } = {}) => {
-    if (record) {
-      if (replace) {
-        history.splice(history.length - 1, 1, path);
-      } else {
-        history.push(path);
-      }
-    }
+  const navigate = !staticLocation
+    ? navigateImplementation(currentPath, history, record, emitter)
+    : () => null;
 
-    currentPath = path;
-    emitter.emit("navigate", path);
-  };
-
-  const navigate = !staticLocation ? navigateImplementation : () => null;
-
-  const subscribe = (cb) => {
-    emitter.on("navigate", cb);
-    return () => emitter.off("navigate", cb);
-  };
+  const subscribe = subscribeImplementation(emitter);
 
   const useMemoryLocation = () => [
     useSyncExternalStore(subscribe, () => currentPath),
     navigate,
   ];
 
-  function reset() {
-    // clean history array with mutation to preserve link
-    history.splice(0, history.length);
-
-    navigateImplementation(path);
-  }
+  const reset = record
+    ? resetImplementation(path, history, navigate)
+    : undefined;
 
   return {
     hook: useMemoryLocation,
     navigate,
     history: record ? history : undefined,
-    reset: record ? reset : undefined,
+    reset,
   };
 };
